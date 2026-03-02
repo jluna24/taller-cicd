@@ -1,0 +1,104 @@
+import { useState, useEffect } from 'react'
+import Papa from 'papaparse'
+import StatCards from './components/StatCards'
+import GrowthChart from './components/GrowthChart'
+import LocationChart from './components/LocationChart'
+import TopContributors from './components/TopContributors'
+import {
+  computeStats,
+  computeGrowth,
+  computeLocations,
+  computeTopContributors,
+} from './utils/parseMembers'
+
+export default function App() {
+  const [members, setMembers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}members.csv`)
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.text()
+      })
+      .then(text => {
+        const { data } = Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+          dynamicTyping: true,
+        })
+        setMembers(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        setError(err.message)
+        setLoading(false)
+      })
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen gap-3 text-slate-400">
+        <div className="w-5 h-5 border-2 border-[#FF9900] border-t-transparent rounded-full animate-spin" />
+        Cargando datos…
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen text-red-400">
+        Error al cargar datos: {error}
+      </div>
+    )
+  }
+
+  const stats = computeStats(members)
+  const growth = computeGrowth(members)
+  const locations = computeLocations(members)
+  const topContributors = computeTopContributors(members)
+
+  return (
+    <div className="min-h-screen">
+      {/* Header */}
+      <header className="bg-[#232F3E] border-b border-[#2a3547] sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-3">
+          <span className="text-[#FF9900] text-2xl font-black">⚡</span>
+          <div>
+            <h1 className="text-white font-bold leading-tight">AWS User Group Ensenada</h1>
+            <p className="text-slate-400 text-xs">Dashboard de la comunidad</p>
+          </div>
+          <div className="ml-auto text-right hidden sm:block">
+            <p className="text-slate-500 text-xs">
+              Datos exportados de Meetup
+            </p>
+          </div>
+        </div>
+      </header>
+
+      {/* Main */}
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        <StatCards stats={stats} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <GrowthChart data={growth} />
+          </div>
+          <div>
+            <LocationChart data={locations} />
+          </div>
+        </div>
+
+        <TopContributors members={topContributors} />
+      </main>
+
+      {/* Footer */}
+      <footer className="max-w-7xl mx-auto px-6 py-6 mt-4 border-t border-[#2a3547]">
+        <p className="text-slate-600 text-xs text-center">
+          AWS User Group Ensenada · {members.length} miembros registrados
+        </p>
+      </footer>
+    </div>
+  )
+}
