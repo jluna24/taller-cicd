@@ -49,3 +49,28 @@ export function computeTopContributors(members, n = 10) {
     .sort((a, b) => Number(b['Events attended']) - Number(a['Events attended']))
     .slice(0, n)
 }
+
+export function computeEventAttendance(members) {
+  const eventMap = {}
+  members.forEach(m => {
+    const dateStr = m['Last Attended']
+    if (!dateStr) return
+    const d = new Date(dateStr)
+    if (isNaN(d)) return
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` // "YYYY-MM-DD" in local time
+    eventMap[key] = (eventMap[key] || 0) + 1
+  })
+
+  return Object.entries(eventMap)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([key, asistentes]) => {
+      const [year, month, day] = key.split('-').map(Number)
+      const d = new Date(year, month - 1, day)
+      const fecha = d.toLocaleDateString('es-MX', {
+        day: 'numeric',
+        month: 'short',
+        year: '2-digit',
+      })
+      return { fecha, asistentes, fechaCompleta: key }
+    })
+}

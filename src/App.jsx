@@ -4,11 +4,13 @@ import StatCards from './components/StatCards'
 import GrowthChart from './components/GrowthChart'
 import LocationChart from './components/LocationChart'
 import TopContributors from './components/TopContributors'
+import EventAttendanceChart from './components/EventAttendanceChart'
 import {
   computeStats,
   computeGrowth,
   computeLocations,
   computeTopContributors,
+  computeEventAttendance,
 } from './utils/parseMembers'
 
 export default function App() {
@@ -58,6 +60,7 @@ export default function App() {
   const growth = computeGrowth(members)
   const locations = computeLocations(members)
   const topContributors = computeTopContributors(members)
+  const eventAttendance = computeEventAttendance(members)
 
   return (
     <div className="min-h-screen">
@@ -89,6 +92,8 @@ export default function App() {
             <LocationChart data={locations} />
           </div>
         </div>
+
+        <EventAttendanceChart data={eventAttendance} />
 
         <TopContributors members={topContributors} />
       </main>

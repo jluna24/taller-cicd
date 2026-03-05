@@ -13,7 +13,8 @@ Ideas para mejorar el dashboard en futuras versiones.
 - [ ] Badges visuales para organizadores y miembros destacados
 
 ### Visualizaciones Mejoradas
-- [ ] Gráfico de asistencia a eventos en el tiempo
+- [X] Gráfico de asistencia a eventos en el tiempo: Nota sobre la limitación del dato: El CSV solo tiene la última asistencia por miembro, no un historial completo. Por eso las barras representan cuántos miembros tienen ese
+  evento como su último asistido — los eventos más recientes tenderán a tener conteos más altos que los eventos antiguos.
 - [ ] Mapa interactivo de ubicaciones de miembros (Leaflet/Mapbox)
 - [ ] Tendencia de RSVPs vs asistencias reales
 - [ ] Gráfico de retención (miembros que continúan activos)
