@@ -57,14 +57,15 @@ export function computeEventAttendance(members) {
     if (!dateStr) return
     const d = new Date(dateStr)
     if (isNaN(d)) return
-    const key = d.toISOString().slice(0, 10) // "YYYY-MM-DD"
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` // "YYYY-MM-DD" in local time
     eventMap[key] = (eventMap[key] || 0) + 1
   })
 
   return Object.entries(eventMap)
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([key, asistentes]) => {
-      const d = new Date(key)
+      const [year, month, day] = key.split('-').map(Number)
+      const d = new Date(year, month - 1, day)
       const fecha = d.toLocaleDateString('es-MX', {
         day: 'numeric',
         month: 'short',
