@@ -15,6 +15,13 @@ pipelines:
             - npm ci
 
       - step:
+          name: Test
+          caches:
+            - node
+          script:
+            - npm test
+
+      - step:
           name: Build
           caches:
             - node
