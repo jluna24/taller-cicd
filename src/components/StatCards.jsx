@@ -35,11 +35,11 @@ export default function StatCards({ stats }) {
       {CARDS.map(({ key, label, icon, color, border }) => (
         <div
           key={key}
-          className={`rounded-xl border ${border} bg-gradient-to-br ${color} bg-[#1a2233] p-5`}
+          className={`rounded-xl border ${border} bg-gradient-to-br ${color} bg-white dark:bg-[#1a2233] p-5`}
         >
           <div className="text-2xl mb-2">{icon}</div>
-          <div className="text-3xl font-bold text-white">{stats[key]}</div>
-          <div className="text-sm text-slate-400 mt-1">{label}</div>
+          <div className="text-3xl font-bold text-slate-900 dark:text-white">{stats[key]}</div>
+          <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">{label}</div>
         </div>
       ))}
     </div>
