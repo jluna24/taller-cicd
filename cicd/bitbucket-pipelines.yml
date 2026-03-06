@@ -1,0 +1,37 @@
+image: node:20
+
+definitions:
+  caches:
+    node: node_modules
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Install
+          caches:
+            - node
+          script:
+            - npm ci
+
+      - step:
+          name: Test
+          caches:
+            - node
+          script:
+            - npm test
+
+      - step:
+          name: Build
+          caches:
+            - node
+          script:
+            - npm run build
+          artifacts:
+            - dist/**
+
+      - step:
+          name: Deploy
+          script:
+            - echo "Deploying build artifacts from dist/ ..."
+            - echo "Deploy complete. Site is live."

@@ -1,0 +1,45 @@
+default:
+  image: node:20
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+stages:
+  - install
+  - build
+  - deploy
+
+install:
+  stage: install
+  script:
+    - npm ci
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+
+build:
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+    policy: pull
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying build artifacts from dist/ ..."
+    - echo "Deploy complete. Site is live."
+  environment:
+    name: production
+  dependencies:
+    - build
